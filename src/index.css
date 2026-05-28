@@ -1,0 +1,34 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Inter, sans-serif;
+}
+
+body{
+  background:#f4f7fb;
+}
+
+a{
+  text-decoration:none;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  text-align:left;
+  padding:18px;
+  color:#64748b;
+  font-size:14px;
+  border-bottom:1px solid #e2e8f0;
+}
+
+td{
+  padding:18px;
+  border-bottom:1px solid #f1f5f9;
+  font-size:15px;
+  color:#0f172a;
+}
