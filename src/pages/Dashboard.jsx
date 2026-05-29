@@ -5,23 +5,40 @@ export default function Dashboard() {
 
     const [sheetData, setSheetData] = useState([])
 
+
     const [selectedEmployee, setSelectedEmployee] = useState("GORVIND")
+
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+
+    useEffect(() => {
+        const handleResize = () => {
+            setScreenWidth(window.innerWidth)
+        }
+
+        window.addEventListener("resize", handleResize)
+
+        return () => {
+            window.removeEventListener("resize", handleResize)
+        }
+    }, [])
+
+    const isMobile = screenWidth <= 768
 
     useEffect(() => {
 
-  fetch(
-    `https://sheetdb.io/api/v1/c8d5dl34662cz?sheet=${selectedEmployee}`
-  )
-    .then((res) => res.json())
-    .then((data) => {
+        fetch(
+            `https://sheetdb.io/api/v1/c8d5dl34662cz?sheet=${selectedEmployee}`
+        )
+            .then((res) => res.json())
+            .then((data) => {
 
-      console.log(data)
+                console.log(data)
 
-      setSheetData(data)
+                setSheetData(data)
 
-    })
+            })
 
-}, [selectedEmployee])
+    }, [selectedEmployee])
 
     const employees = [
         "GORVIND",
@@ -162,128 +179,184 @@ export default function Dashboard() {
 
             {/* SIDEBAR */}
 
-            <div
-                style={{
-                    width: "250px",
-                    background: "#071226",
-                    color: "white",
-                    padding: "24px 18px",
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between"
-                }}
-            >
+            {
+                !isMobile && (
 
-                <div>
-
-                    <h1
+                    <div
                         style={{
-                            fontSize: "24px",
-                            lineHeight: "1.3",
-                            marginBottom: "50px",
-                            fontWeight: "800",
-                            marginTop: "10px"
+                            width: window.innerWidth < 768 ? "100%" : "250px",
+                            background: "#071226",
+                            color: "white",
+                            padding: "24px 18px",
+                            position: window.innerWidth < 768 ? "relative" : "fixed",
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between"
                         }}
                     >
-                        STAFF WORK
-                        <br />
-                        MANAGEMENT
-                    </h1>
 
-                    {
-                        ["Dashboard", "Tasks", "Calendar", "Employees", "Reports", "Settings"].map((item, index) => (
+                        <div>
 
-                            <div
-                                key={index}
+                            <h1
                                 style={{
-                                    padding: "16px 18px",
-                                    borderRadius: "16px",
-                                    marginBottom: "12px",
-                                    background: index === 0 ? "#2563eb" : "transparent",
-                                    cursor: "pointer",
-                                    fontSize: "16px",
+                                    fontSize: "24px",
+                                    lineHeight: "1.3",
+                                    marginBottom: "50px",
+                                    fontWeight: "800",
+                                    marginTop: "10px"
+                                }}
+                            >
+                                STAFF WORK
+                                <br />
+                                MANAGEMENT
+                            </h1>
+
+                            {
+                                ["Dashboard", "Tasks", "Calendar", "Employees", "Reports", "Settings"].map((item, index) => (
+
+                                    <div
+                                        key={index}
+                                        style={{
+                                            padding: "16px 18px",
+                                            borderRadius: "16px",
+                                            marginBottom: "12px",
+                                            background: index === 0 ? "#2563eb" : "transparent",
+                                            cursor: "pointer",
+                                            fontSize: "16px",
+                                            fontWeight: "600"
+                                        }}
+                                    >
+                                        {item}
+                                    </div>
+
+                                ))
+                            }
+
+                        </div>
+
+                        <div
+                            style={{
+                                padding: "18px",
+                                background: "rgba(255,255,255,0.05)",
+                                borderRadius: "18px"
+                            }}
+                        >
+
+                            <p
+                                style={{
+                                    marginBottom: "10px",
+                                    color: "#94a3b8",
+                                    fontSize: "13px",
                                     fontWeight: "600"
                                 }}
                             >
-                                {item}
-                            </div>
+                                SELECT EMPLOYEE
+                            </p>
 
-                        ))
-                    }
+                            <select
 
-                </div>
+                                value={selectedEmployee}
 
-                <div
-                    style={{
-                        padding: "18px",
-                        background: "rgba(255,255,255,0.05)",
-                        borderRadius: "18px"
-                    }}
-                >
+                                onChange={(e) =>
+                                    setSelectedEmployee(e.target.value)
+                                }
 
-                    <p
-                        style={{
-                            marginBottom: "10px",
-                            color: "#94a3b8",
-                            fontSize: "13px",
-                            fontWeight: "600"
-                        }}
-                    >
-                        SELECT EMPLOYEE
-                    </p>
+                                style={{
+                                    width: "100%",
+                                    background: "#0f172a",
+                                    color: "white",
+                                    border: "1px solid rgba(255,255,255,0.1)",
+                                    padding: "14px",
+                                    borderRadius: "12px",
+                                    fontSize: "15px",
+                                    outline: "none"
+                                }}
+                            >
 
-                    <select
+                                {
+                                    employees.map((employee, index) => (
 
-                        value={selectedEmployee}
+                                        <option
+                                            key={index}
+                                            value={employee}
+                                        >
+                                            {employee}
+                                        </option>
 
-                        onChange={(e) =>
-                            setSelectedEmployee(e.target.value)
-                        }
+                                    ))
+                                }
 
-                        style={{
-                            width: "100%",
-                            background: "#0f172a",
-                            color: "white",
-                            border: "1px solid rgba(255,255,255,0.1)",
-                            padding: "14px",
-                            borderRadius: "12px",
-                            fontSize: "15px",
-                            outline: "none"
-                        }}
-                    >
+                            </select>
 
-                        {
-                            employees.map((employee, index) => (
+                        </div>
 
-                                <option
-                                    key={index}
-                                    value={employee}
-                                >
-                                    {employee}
-                                </option>
-
-                            ))
-                        }
-
-                    </select>
-
-                </div>
-
-            </div>
+                    </div>
+                )}
 
             {/* MAIN */}
 
+
+
             <div
                 style={{
-                    marginLeft: "250px",
+                    marginLeft: isMobile ? "0px" : "250px",
                     width: "100%",
-                    padding: "24px"
+                    padding: isMobile ? "12px" : "24px"
                 }}
             >
+                {
+                    isMobile && (
+
+                        <div
+                            style={{
+                                background: "#071226",
+                                padding: "16px",
+                                borderRadius: "16px",
+                                marginBottom: "20px",
+                                color: "white"
+                            }}
+                        >
+
+                            <h2
+                                style={{
+                                    margin: 0,
+                                    marginBottom: "12px"
+                                }}
+                            >
+                                STAFF DASHBOARD
+                            </h2>
+
+                            <select
+                                value={selectedEmployee}
+                                onChange={(e) =>
+                                    setSelectedEmployee(e.target.value)
+                                }
+                                style={{
+                                    width: "100%",
+                                    padding: "12px",
+                                    borderRadius: "10px",
+                                    border: "none"
+                                }}
+                            >
+                                {
+                                    employees.map((employee) => (
+                                        <option
+                                            key={employee}
+                                            value={employee}
+                                        >
+                                            {employee}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+
+                        </div>
+
+                    )
+                }
 
                 {/* TOPBAR */}
 
@@ -292,38 +365,35 @@ export default function Dashboard() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        gap: "12px",
                         marginBottom: "28px"
                     }}
                 >
 
-                    <div>
-
-                        <h1
-                            style={{
-                                fontSize: "20px",
-                                color: "#0f172a",
-                                margin: 0,
-                                fontWeight: "700"
-                            }}
-                        >
-                            STAFF WORK MANAGEMENT DASHBOARD
-                        </h1>
-
-                    </div>
-
-                    <div
+                    <h1
                         style={{
-                            display: "flex",
-                            gap: "18px"
+                            margin: 0,
+                            color: "#0f172a",
+                            fontWeight: "700",
+                            fontSize: isMobile ? "16px" : "20px",
+                            lineHeight: isMobile ? "22px" : "normal",
+                            flex: 1
                         }}
                     >
+                        {isMobile
+                            ? "STAFF DASHBOARD"
+                            : "STAFF WORK MANAGEMENT DASHBOARD"}
+                    </h1>
 
-                        <input
-                            type="date"
-                            style={topBox}
-                        />
-
-                    </div>
+                    <input
+                        type="date"
+                        style={{
+                            ...topBox,
+                            width: isMobile ? "140px" : "180px",
+                            minWidth: isMobile ? "140px" : "180px",
+                            padding: isMobile ? "10px" : "14px 18px"
+                        }}
+                    />
 
                 </div>
 
@@ -332,7 +402,12 @@ export default function Dashboard() {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(4,1fr)",
+                        gridTemplateColumns:
+                            window.innerWidth < 768
+                                ? "1fr"
+                                : window.innerWidth < 1200
+                                    ? "repeat(2,1fr)"
+                                    : "repeat(4,1fr)",
                         gap: "20px"
                     }}
                 >
@@ -399,7 +474,10 @@ export default function Dashboard() {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
+                        gridTemplateColumns:
+                            window.innerWidth < 992
+                                ? "1fr"
+                                : "1fr 1fr",
                         gap: "20px",
                         marginTop: "24px"
                     }}
@@ -416,6 +494,7 @@ export default function Dashboard() {
                         <div
                             style={{
                                 display: "flex",
+                                flexDirection: window.innerWidth < 768 ? "column" : "row",
                                 justifyContent: "space-between",
                                 alignItems: "center",
                                 marginTop: "30px"
@@ -424,8 +503,8 @@ export default function Dashboard() {
 
                             <div
                                 style={{
-                                    width: "260px",
-                                    height: "260px",
+                                    width: window.innerWidth < 768 ? "220px" : "260px",
+                                    height: window.innerWidth < 768 ? "220px" : "260px",
                                     borderRadius: "50%",
                                     background:
                                         `conic-gradient(
@@ -546,103 +625,110 @@ export default function Dashboard() {
                     >
                         STAFF TASKS
                     </h2>
-
-                    <table
+                    <div
                         style={{
-                            width: "100%",
-                            borderCollapse: "collapse"
+                            overflowX: "auto"
                         }}
                     >
 
-                        <thead>
+                        <table
+                            style={{
+                                width: "100%",
+                                borderCollapse: "collapse"
+                            }}
+                        >
 
-                            <tr
-                                style={{
-                                    background: "#f8fafc",
-                                    textAlign: "left"
-                                }}
-                            >
+                            <thead>
 
-                                <th style={thStyle}>Task No</th>
-                                <th style={thStyle}>Task Name</th>
-                                <th style={thStyle}>Description</th>
-                                <th style={thStyle}>Assigned To</th>
-                                <th style={thStyle}>Due Date</th>
-                                <th style={thStyle}>Status</th>
+                                <tr
+                                    style={{
+                                        background: "#f8fafc",
+                                        textAlign: "left"
+                                    }}
+                                >
 
-                            </tr>
+                                    <th style={thStyle}>Task No</th>
+                                    <th style={thStyle}>Task Name</th>
+                                    <th style={thStyle}>Description</th>
+                                    <th style={thStyle}>Assigned To</th>
+                                    <th style={thStyle}>Due Date</th>
+                                    <th style={thStyle}>Status</th>
 
-                        </thead>
+                                </tr>
 
-                        <tbody>
+                            </thead>
 
-                            {
-                                sheetData.map((item, index) => (
+                            <tbody>
 
-                                    <tr key={index}>
+                                {
+                                    sheetData.map((item, index) => (
 
-                                        <td style={tdStyle}>
-                                            {item["Task No"]}
-                                        </td>
+                                        <tr key={index}>
 
-                                        <td style={tdStyle}>
-                                            {item["Task Name"]}
-                                        </td>
+                                            <td style={tdStyle}>
+                                                {item["Task No"]}
+                                            </td>
 
-                                        <td style={tdStyle}>
-                                            {item["Discriptions"]}
-                                        </td>
+                                            <td style={tdStyle}>
+                                                {item["Task Name"]}
+                                            </td>
 
-                                        <td style={tdStyle}>
-                                            {item["Assigned To"]}
-                                        </td>
+                                            <td style={tdStyle}>
+                                                {item["Discriptions"]}
+                                            </td>
 
-                                        <td style={tdStyle}>
-                                            {item["Due Date"]}
-                                        </td>
+                                            <td style={tdStyle}>
+                                                {item["Assigned To"]}
+                                            </td>
 
-                                        <td style={tdStyle}>
+                                            <td style={tdStyle}>
+                                                {item["Due Date"]}
+                                            </td>
 
-                                            <span
-                                                style={{
-                                                    padding: "8px 14px",
-                                                    borderRadius: "30px",
-                                                    fontSize: "13px",
-                                                    fontWeight: "600",
-                                                    background:
-                                                        item.Status === "Completed"
-                                                            ? "#dcfce7"
-                                                            : item.Status === "Pending"
-                                                                ? "#fef3c7"
-                                                                : "#dbeafe",
+                                            <td style={tdStyle}>
 
-                                                    color:
-                                                        item.Status === "Completed"
-                                                            ? "#15803d"
-                                                            : item.Status === "Pending"
-                                                                ? "#b45309"
-                                                                : "#1d4ed8"
-                                                }}
-                                            >
-                                                {item.Status}
-                                            </span>
+                                                <span
+                                                    style={{
+                                                        padding: "8px 14px",
+                                                        borderRadius: "30px",
+                                                        fontSize: "13px",
+                                                        fontWeight: "600",
+                                                        background:
+                                                            item.Status === "Completed"
+                                                                ? "#dcfce7"
+                                                                : item.Status === "Pending"
+                                                                    ? "#fef3c7"
+                                                                    : "#dbeafe",
 
-                                        </td>
+                                                        color:
+                                                            item.Status === "Completed"
+                                                                ? "#15803d"
+                                                                : item.Status === "Pending"
+                                                                    ? "#b45309"
+                                                                    : "#1d4ed8"
+                                                    }}
+                                                >
+                                                    {item.Status}
+                                                </span>
 
-                                    </tr>
+                                            </td>
 
-                                ))
-                            }
+                                        </tr>
 
-                        </tbody>
+                                    ))
+                                }
 
-                    </table>
+                            </tbody>
+
+                        </table>
+                    </div>
+
 
                 </div>
 
-            </div>
+            </div >
 
-        </div>
+        </div >
 
     )
 
